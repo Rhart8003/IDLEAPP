@@ -12,3 +12,7 @@ npm start
 ```
 
 Health endpoint: `/api/health`
+
+## Deploy
+
+The repository includes a `render.yaml` blueprint for the free Render web-service tier.
