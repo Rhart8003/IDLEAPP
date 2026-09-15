@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: idle-private-beta
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DEMO_MODE
+        value: "true"
+      - key: SUPABASE_URL
+        value: https://zrltsqyuutlhxihahlbi.supabase.co
+      - key: SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_oMq3UVMgqZjOtTShpRzfbw_rDVEfcSk
+      - key: PLUS_MONTHLY_PRICE
+        value: "9.99"
+      - key: MARKETPLACE_FEE_RATE
+        value: "0.12"
+      - key: FREE_MONTHLY_SCANS
+        value: "5"
