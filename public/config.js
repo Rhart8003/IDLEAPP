@@ -1,0 +1,1 @@
+window.IDLE_CONFIG={supabaseUrl:'https://zrltsqyuutlhxihahlbi.supabase.co',supabaseKey:'sb_publishable_oMq3UVMgqZjOtTShpRzfbw_rDVEfcSk'};
