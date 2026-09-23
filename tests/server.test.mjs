@@ -1,0 +1,16 @@
+import {test,before,after} from 'node:test';
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {createServer} from 'node:net';
+let child,origin;
+before(async()=>{const probe=createServer();await new Promise(r=>probe.listen(0,'127.0.0.1',r));const port=probe.address().port;await new Promise(r=>probe.close(r));origin=`http://127.0.0.1:${port}`;child=spawn(process.execPath,['--import','./tests/fake-services.mjs','server/index.mjs'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),SUPABASE_URL:'https://test-supabase.invalid',SUPABASE_PUBLISHABLE_KEY:'test-only',OPENAI_API_KEY:''},stdio:['ignore','pipe','pipe']});await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(new Error('Server did not start')),5000);child.stdout.on('data',()=>{clearTimeout(timeout);resolve()});child.on('error',reject);child.on('exit',code=>{if(code)reject(new Error('Server exited '+code))})})});
+after(()=>child?.kill());
+const post=(path,body)=>fetch(origin+path,{method:'POST',headers:{Authorization:'Bearer test-only','Content-Type':'application/json'},body:JSON.stringify(body)});
+test('private routes require authentication',async()=>{const r=await fetch(origin+'/api/listings');assert.equal(r.status,401)});
+test('valid quote separates proposed deposit from estimated rental total',async()=>{const r=await post('/api/bookings/quote',{rate:20,days:3,deposit:50});assert.equal(r.status,200);assert.deepEqual(await r.json(),{rental:60,fee:7.2,deposit:50,charge:67.2,ownerPayout:60})});
+test('invalid quote prices, fractional days and deposits are rejected',async()=>{for(const body of [{rate:-1,days:2},{rate:'bad',days:2},{rate:20,days:1.5},{rate:20,days:0},{rate:20,days:366},{rate:20,days:2,deposit:-2}])assert.equal((await post('/api/bookings/quote',body)).status,400)});
+test('samples are explicitly identified and do not show fictitious ratings',async()=>{const r=await fetch(origin+'/api/listings',{headers:{Authorization:'Bearer test-only'}});const list=await r.json();assert.equal(list.length,3);assert.ok(list.every(x=>x.demo&&x.rating===null&&x.distance==='Illustrative sample'))});
+test('booking request cannot falsely succeed with volatile storage',async()=>{const r=await post('/api/bookings',{listingId:'l1',days:2});assert.equal(r.status,503);assert.match((await r.json()).error,/No booking or charge was created/)});
+test('waitlisted assets cannot bypass the UI and publish via API',async()=>{const r=await post('/api/work/rent',{assetId:'test-asset',title:'Boat',rate:100,deposit:100});assert.equal(r.status,400);assert.match((await r.json()).error,/category/)});
+test('invalid listing amounts are rejected before saving',async()=>{for(const rate of ['nope',-1,100001])assert.equal((await post('/api/work/rent',{assetId:'x',title:'Item',rate,deposit:0})).status,400)});
+test('unsupported uploads produce a structured, actionable error',async()=>{const body=new FormData();body.append('photo',new Blob(['test'],{type:'text/plain'}),'test.txt');const r=await fetch(origin+'/api/scan',{method:'POST',headers:{Authorization:'Bearer test-only'},body});assert.equal(r.status,400);assert.match((await r.json()).error,/JPG/) });
