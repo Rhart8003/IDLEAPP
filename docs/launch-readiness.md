@@ -11,7 +11,7 @@
 
 ## Implemented in this branch
 
-Responsive midnight/lime/lilac design; useful signed-out overview; clearer account forms; category illustrations; mobile bottom navigation; consistent empty/loading/error states; escaped user and AI content; current-session API tokens; truthful beta labels; deposit visibility; finite price and whole-day validation; server-side waitlist and ownership check on rental publication; structured upload errors; paused volatile booking creation.
+Responsive purple/gold/black/light-gray design; useful signed-out overview; clearer account forms; category illustrations; mobile bottom navigation; consistent empty/loading/error states; escaped user and AI content; current-session API tokens; truthful beta labels; deposit visibility; finite price and whole-day validation; server-side waitlist and ownership check on rental publication; structured upload errors; paused volatile booking creation.
 
 ## Automated checks
 
@@ -37,3 +37,7 @@ Durable bookings, availability dates, owner acceptance, cancellation/refund flow
 ## Deployment
 
 Review the branch and confirm the Render workspace. Verify environment-variable names without exposing values. Deploy the code after visual and real-account checks, then repeat health and persistence checks on the resulting URL. Keep the preceding deploy available for rollback.
+
+## October 2 launch preparation
+
+Target launch: October 7, 2026. User selected purple, gold, black and light gray. Existing 15 automated tests passed again. Production health responded with version 1.14.0; redesign remains on the review branch. IDLE database was inactive; restore requested successfully and project reports COMING_UP. Render workspace confirmation remains pending.
