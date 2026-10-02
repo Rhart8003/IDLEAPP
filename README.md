@@ -2,7 +2,7 @@
 
 **A little less idle. A lot more possible.**
 
-IDLE is a private-beta asset discovery and portfolio app. Version 1.15 introduces a midnight, lime, lilac and warm-white interface with responsive navigation and illustrated asset cards.
+IDLE is a private-beta asset discovery and portfolio app. Version 1.15 introduces a purple, gold, black and light-gray interface with responsive navigation and illustrated asset cards.
 
 ## Run and test
 
